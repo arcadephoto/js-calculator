@@ -1,6 +1,9 @@
 //basic calculation works
 //multi-digit input works
 //prevents operator stacking (can't input +++ *** and so on)
+//decimals appear to work. *fingers crossed*
+//once calculation has run, inputting number automatically resets
+
 
 
 
@@ -18,8 +21,9 @@ const getDecimal = document.querySelectorAll("[class='decimal']");
 
 let calculation = [];
 let buffer = "";
+let currentChar = "";
 let operatorOn = false;
-let clearedBuffer = false;
+let calcDone = false;
 
 
 function pushNumber(event) {
@@ -41,25 +45,35 @@ function clickButton(event) {
 
 function clickClear(){
   operatorOn = false;
-  clearedBuffer = false;
+  calcDone = false;
   calcDisplay.value = 0;
   calculation = [];
   buffer = "";
+  currentChar = "";
 }
 
 //the number buttons push inputs to a buffer rather than straight to an
 //array. this allows multiple-digit numbers.
+//also checks calcDone function. if true, clickNumber resets the calculator.
+//in other words, if the user has already run a calculation, then hitting
+//a number button resets and starts fresh.
 function clickNumber(event) {
-  if (calcDisplay.value == "0") {
-    calcDisplay.value = null;
-    calcDisplay.value = (calcDisplay.value + event.target.value);
-    buffer = (buffer + event.target.value);
+  if (calcDone == true) {
+    clickClear();
   }
-  else{
-    calcDisplay.value = (calcDisplay.value + event.target.value);
-    buffer = (buffer + event.target.value);
+  else {
+    if (calcDisplay.value == "0") {
+      calcDisplay.value = null;
+      calcDisplay.value = (calcDisplay.value + event.target.value);
+      buffer = (buffer + event.target.value);
+      currentChar = event.target.value;
+    }
+    else{
+      calcDisplay.value = (calcDisplay.value + event.target.value);
+      buffer = (buffer + event.target.value);
+      currentChar = event.target.value;
+    }
   }
-  //console.log(buffer);
 }
 
 
@@ -70,27 +84,29 @@ function clickZero(event) {
   if (calcDisplay.value != "0") {
     calcDisplay.value = (calcDisplay.value + event.target.value);
     buffer = (buffer + event.target.value);
-    //calculation.push(event.target.value);
-    //console.log(event.target.value);
+    currentChar = event.target.value;
   }
   else {
     buffer = (buffer + event.target.value);
+    currentChar = event.target.value;
   }
 }
 
 function clickDecimal(event) {
-  if (calcDisplay.value.includes(".") === false) {
+  if (currentChar != "." ) {
+    currentChar = ".";
     calcDisplay.value = (calcDisplay.value + event.target.value);
-    console.log(event.target.value);
+    buffer = (buffer + event.target.value);
+    //console.log(event.target.value);
   }
 }
 
 
 //when any operator is pressed, the function pushes everything in the
 //buffer into the calculation array. this allows for multiple-digit inputs.
-//in then clears the buffer to make room for the next number input
+//it then clears the buffer to make room for the next number input
 
-//oppYes flag prevents multiple operators at once. for example, you can't
+//operatorOn flag prevents multiple operators at once. for example, you can't
 //input ++++++
 function smoothOperator(event) {
   if (operatorOn == false) {
@@ -105,12 +121,12 @@ function smoothOperator(event) {
 
 //this pushes everything else in the buffer into the calculation array.
 function clickEquals(){
-  if (calcDisplay.value != "0" && clearedBuffer == false) {
-    clearedBuffer = true;
+  if (calcDisplay.value != "0" && calcDone == false) {
+    calcDone = true;
     calculation.push(buffer);
     //console.log(calculation);
-    let num1 = parseInt(calculation[0]);
-    let num2 = parseInt(calculation[2]);
+    let num1 = parseFloat(calculation[0], 10);
+    let num2 = parseFloat(calculation[2], 10);
     let opp = calculation[1];
     if (opp == "+") {
       result = num1 + num2;
@@ -127,14 +143,15 @@ function clickEquals(){
     if (result || result == "0"){
       calcDisplay.value = result;
     }
-    for (let i = 0; i < calculation.length; i++ ){
-      alert(calculation[i]);
-      if ((i + 1) == calculation.length ){
-        alert(`equals ${result}!`);
-      }
-    }
-    //console.log(calculation);
-    //console.log(result);
+    console.log(num1);
+    console.log(num2);
+    //this is the for loop and alert required by the assignment
+    // for (let i = 0; i < calculation.length; i++ ){
+    //   alert(calculation[i]);
+    //   if ((i + 1) == calculation.length ){
+    //     alert(`equals ${result}!`);
+    //   }
+    // }
   }
 }
 
@@ -165,25 +182,3 @@ getDecimal.forEach(function(e){
 getZero.forEach(function(e){
   e.addEventListener('click', clickZero);
 });
-
-
-
-
-
-//ORIGINAL CODE FOR EQUALS BUTTON
-//
-// function clickEquals(event) {
-//   //console.log(event.target.value);
-//   calcDisplay.value = (calcDisplay.value + event.target.value);
-//   calculate(event);
-//   //let doMath = calculation.toString();
-//   //doMath = calculation.join('');
-//   //console.log(doMath);
-//   //calcDisplay.value = (calcDisplay.value + event.target.value);
-//   equalTest();
-// }
-
-//document.querselectorall
-//eventlistener (event)
-//event.target.value
-//event.target.addEventListener

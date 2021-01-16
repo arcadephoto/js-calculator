@@ -3,12 +3,14 @@
 //prevents operator stacking (can't input +++ *** and so on)
 //decimals appear to work. *fingers crossed*
 //once calculation has run, inputting number automatically resets
+//plus-minus button works, but can be broken by pushing it multiple times
 
 
 
 
 
-
+//these create constants by converting the various classes defined
+//in the HTML
 const calcDisplay = document.querySelector('.calculator-screen');
 const getNumber = document.querySelectorAll("[class='number']");
 const getOperator = document.querySelectorAll("[class='operator']");
@@ -19,30 +21,41 @@ const getClear = document.querySelectorAll("[class='clear']");
 const getZero = document.querySelectorAll("[class='number btn-lg']")
 const getDecimal = document.querySelectorAll("[class='decimal']");
 
+//a handful of useful variables, all of which are reset to default on
+//page load
 let calculation = [];
 let buffer = "";
 let currentChar = "";
 let operatorOn = false;
 let calcDone = false;
+let minusSwitch = false;
 
 
 function pushNumber(event) {
   alert(event.target.value);
 }
-
 function pushOperator(event) {
   alert(event.target.value);
 }
-
 function calculate(event) {
   //alert(event.target.value);
   //console.log(calculation);
+}
+//possibly change flow control for +- to check currentChar flag
+function clickPlusMinus(event){
+  if (minusSwitch == false){
+    if (calcDisplay.value == "0") {
+      calcDisplay.value = null;
+    }
+    minusSwitch = true;
+    calcDisplay.value = (calcDisplay.value + "-");
+    buffer = buffer + "-"
+  }
 }
 
 function clickButton(event) {
   console.log(event.target.value);
 }
-
 function clickClear(){
   operatorOn = false;
   calcDone = false;
@@ -50,6 +63,7 @@ function clickClear(){
   calculation = [];
   buffer = "";
   currentChar = "";
+  minusSwitch = false;
 }
 
 //the number buttons push inputs to a buffer rather than straight to an
@@ -143,8 +157,7 @@ function clickEquals(){
     if (result || result == "0"){
       calcDisplay.value = result;
     }
-    console.log(num1);
-    console.log(num2);
+
     //this is the for loop and alert required by the assignment
     // for (let i = 0; i < calculation.length; i++ ){
     //   alert(calculation[i]);
@@ -165,7 +178,7 @@ getOperator.forEach(function(e){
   e.addEventListener('click', smoothOperator);
 });
 getPlusMinus.forEach(function(e){
-  e.addEventListener('click', clickButton);
+  e.addEventListener('click', clickPlusMinus);
 });
 getPercent.forEach(function(e){
   e.addEventListener('click', clickButton);

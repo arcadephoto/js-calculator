@@ -10,6 +10,11 @@ const getZero = document.querySelectorAll("[class='number btn-lg']")
 const getDecimal = document.querySelectorAll("[class='decimal']");
 
 let calculation = [];
+let buffer = "";
+let oppYes = false;
+
+//possibly make on-off switch to check against
+
 
 
 function pushNumber(event) {
@@ -22,39 +27,48 @@ function pushOperator(event) {
 
 function calculate(event) {
   //alert(event.target.value);
-  console.log(calculation);
+  //console.log(calculation);
 }
 
 function clickButton(event) {
   console.log(event.target.value);
-  //calcDisplay.value = (calcDisplay.value + event.target.value);
 }
 
 function clickClear(){
+  oppYes = false;
   calcDisplay.value = 0;
   calculation = [];
+  buffer = "";
 }
 
+//the number buttons push inputs to a buffer rather than straight to an
+//array. this allows multiple-digit numbers.
 function clickNumber(event) {
   if (calcDisplay.value == "0") {
     calcDisplay.value = null;
     calcDisplay.value = (calcDisplay.value + event.target.value);
-    calculation.push(event.target.value);
+    buffer = (buffer + event.target.value);
   }
   else{
     calcDisplay.value = (calcDisplay.value + event.target.value);
-    calculation.push(event.target.value);
+    buffer = (buffer + event.target.value);
   }
-  //pushNumber(event);
-  //console.log(event.target.value);
-  //console.log(calculation);
+  //console.log(buffer);
 }
 
+
+//if the display is already showing only "0" this function will not change
+//the display, but it will push 0 to the calculation buffer so a
+//fault doesn't arise when someone tries to calulate 0 + something.
 function clickZero(event) {
   if (calcDisplay.value != "0") {
     calcDisplay.value = (calcDisplay.value + event.target.value);
-    calculation.push(event.target.value);
-    console.log(event.target.value);
+    buffer = (buffer + event.target.value);
+    //calculation.push(event.target.value);
+    //console.log(event.target.value);
+  }
+  else {
+    buffer = (buffer + event.target.value);
   }
 }
 
@@ -65,19 +79,28 @@ function clickDecimal(event) {
   }
 }
 
+
+//when any operator is pressed, the function pushes everything in the
+//buffer into the calculation array. this allows for multiple-digit inputs.
+//in then clears the buffer to make room for the next number input
+
+//oppYes flag prevents multiple operators at once. for example, you can't
+//input ++++++
 function smoothOperator(event) {
-  //console.log(event.target.value);
-  calcDisplay.value = (calcDisplay.value + event.target.value);
-  //calculation.push(calcDisplay.value);
-  calculation.push(event.target.value);
-  console.log(calculation);
-  //pushOperator(event);
-  //calcDisplay.value = (calcDisplay.value + event.target.value);
+  if (oppYes == false) {
+    oppYes = true;
+    calcDisplay.value = (calcDisplay.value + event.target.value);
+    calculation.push(buffer);
+    buffer = "";
+    calculation.push(event.target.value);
+    //console.log(calculation);
+  }
 }
 
-
-
+//this pushes everything else in the buffer into the calculation array.
 function clickEquals(){
+  calculation.push(buffer);
+  //console.log(calculation);
   let num1 = parseInt(calculation[0]);
   let num2 = parseInt(calculation[2]);
   let opp = calculation[1];
@@ -93,7 +116,11 @@ function clickEquals(){
   else if (opp == "/") {
     result = num1 / num2;
   }
-  calcDisplay.value = result;
+  if (result){
+    calcDisplay.value = result;
+  }
+
+//console.log(calculation);
 //console.log(result);
 }
 
@@ -131,7 +158,6 @@ getZero.forEach(function(e){
 
 
 //ORIGINAL CODE FOR EQUALS BUTTON
-}
 //
 // function clickEquals(event) {
 //   //console.log(event.target.value);

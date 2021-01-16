@@ -4,7 +4,8 @@
 //decimals appear to work. *fingers crossed*
 //once calculation has run, inputting number automatically resets
 //plus-minus button works, but can be broken by pushing it multiple times
-
+//square button works, but with no flow control
+//square root works, but with no flow control
 
 
 
@@ -20,6 +21,8 @@ const getEquals = document.querySelectorAll("[class='equal-sign']");
 const getClear = document.querySelectorAll("[class='clear']");
 const getZero = document.querySelectorAll("[class='number btn-lg']")
 const getDecimal = document.querySelectorAll("[class='decimal']");
+const getSquare = document.querySelectorAll('.square');
+const getSqroot = document.querySelectorAll('.sqroot');
 
 //a handful of useful variables, all of which are reset to default on
 //page load
@@ -195,3 +198,28 @@ getDecimal.forEach(function(e){
 getZero.forEach(function(e){
   e.addEventListener('click', clickZero);
 });
+getSquare.forEach(function(e){
+  e.addEventListener('click', clickSquare);
+});
+getSqroot.forEach(function(e){
+  e.addEventListener('click', clickSqroot);
+});
+
+
+
+function clickSquare(event) {
+  calculation.push(buffer);
+  let num1 = parseFloat(calculation[0]);
+  result = num1 * num1;
+  calcDisplay.value = result;
+  // console.log(result);
+  // console.log(event.target.value);
+}
+function clickSqroot(event) {
+  calculation.push(buffer);
+  let num1 = parseFloat(calculation[0]);
+  result = Math.sqrt(num1);
+  calcDisplay.value = result;
+  // console.log(result);
+  // console.log(event.target.value);
+}

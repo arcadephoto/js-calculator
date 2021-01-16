@@ -1,5 +1,12 @@
+//basic calculation works
+//multi-digit input works
+//prevents operator stacking (can't input +++ *** and so on)
+
+
+
+
+
 const calcDisplay = document.querySelector('.calculator-screen');
-//let displayNum = calcDisplay.value
 const getNumber = document.querySelectorAll("[class='number']");
 const getOperator = document.querySelectorAll("[class='operator']");
 const getPlusMinus = document.querySelectorAll("[class='plus-minus']");
@@ -11,10 +18,8 @@ const getDecimal = document.querySelectorAll("[class='decimal']");
 
 let calculation = [];
 let buffer = "";
-let oppYes = false;
-
-//possibly make on-off switch to check against
-
+let operatorOn = false;
+let clearedBuffer = false;
 
 
 function pushNumber(event) {
@@ -35,7 +40,8 @@ function clickButton(event) {
 }
 
 function clickClear(){
-  oppYes = false;
+  operatorOn = false;
+  clearedBuffer = false;
   calcDisplay.value = 0;
   calculation = [];
   buffer = "";
@@ -87,8 +93,8 @@ function clickDecimal(event) {
 //oppYes flag prevents multiple operators at once. for example, you can't
 //input ++++++
 function smoothOperator(event) {
-  if (oppYes == false) {
-    oppYes = true;
+  if (operatorOn == false) {
+    operatorOn = true;
     calcDisplay.value = (calcDisplay.value + event.target.value);
     calculation.push(buffer);
     buffer = "";
@@ -99,31 +105,38 @@ function smoothOperator(event) {
 
 //this pushes everything else in the buffer into the calculation array.
 function clickEquals(){
-  calculation.push(buffer);
-  //console.log(calculation);
-  let num1 = parseInt(calculation[0]);
-  let num2 = parseInt(calculation[2]);
-  let opp = calculation[1];
-  if (opp == "+") {
-    result = num1 + num2;
+  if (calcDisplay.value != "0" && clearedBuffer == false) {
+    clearedBuffer = true;
+    calculation.push(buffer);
+    //console.log(calculation);
+    let num1 = parseInt(calculation[0]);
+    let num2 = parseInt(calculation[2]);
+    let opp = calculation[1];
+    if (opp == "+") {
+      result = num1 + num2;
+    }
+    else if (opp == "-"){
+      result = num1 - num2;
+    }
+    else if (opp == "*"){
+      result = num1 * num2;
+    }
+    else if (opp == "/") {
+      result = num1 / num2;
+    }
+    if (result || result == "0"){
+      calcDisplay.value = result;
+    }
+    for (let i = 0; i < calculation.length; i++ ){
+      alert(calculation[i]);
+      if ((i + 1) == calculation.length ){
+        alert(`equals ${result}!`);
+      }
+    }
+    //console.log(calculation);
+    //console.log(result);
   }
-  else if (opp == "-"){
-    result = num1 - num2;
-  }
-  else if (opp == "*"){
-    result = num1 * num2;
-  }
-  else if (opp == "/") {
-    result = num1 / num2;
-  }
-  if (result){
-    calcDisplay.value = result;
-  }
-
-//console.log(calculation);
-//console.log(result);
 }
-
 
 
 //const getButton = document.querySelectorAll("[type='button']");

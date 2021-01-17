@@ -9,6 +9,8 @@
 //arbitary exponent works
 //arbitary root works
 //Percentage works
+//TO DO: ADD CHECK TO OPERATOR FUNCTION SO THAT THE CALCULATOR
+//ACCEPTS INPUT AFTER INPUT WITHOUT NEEDING TO HIT CLEAR OR EQUALS
 
 
 //these create constants by converting the various classes defined
@@ -36,6 +38,39 @@ let minusSwitch = false;
 let numPerc;
 let percentOn = false;
 
+//These are the event listners that translate button clicks into
+//specific function calls
+getNumber.forEach(function(e){
+  e.addEventListener('click', clickNumber);
+});
+getOperator.forEach(function(e){
+  e.addEventListener('click', smoothOperator);
+});
+getPlusMinus.forEach(function(e){
+  e.addEventListener('click', clickPlusMinus);
+});
+getPercent.forEach(function(e){
+  e.addEventListener('click', clickPercent);
+});
+getEquals.forEach(function(e){
+  e.addEventListener('click', clickEquals);
+});
+getClear.forEach(function(e){
+  e.addEventListener('click', clickClear);
+});
+getDecimal.forEach(function(e){
+  e.addEventListener('click', clickDecimal);
+});
+getZero.forEach(function(e){
+  e.addEventListener('click', clickZero);
+});
+getSquare.forEach(function(e){
+  e.addEventListener('click', clickSquare);
+});
+getSqroot.forEach(function(e){
+  e.addEventListener('click', clickSqroot);
+});
+
 
 function pushNumber(event) {
   alert(event.target.value);
@@ -61,7 +96,6 @@ function clickPlusMinus(event){
   }
 }
 
-
 //placeholder function, to be replaced as buttons are added
 function clickButton(event) {
   console.log(event.target.value);
@@ -76,7 +110,6 @@ function clickClear(){
   currentChar = "";
   minusSwitch = false;
   percentOn = false;
-
 }
 
 //the number buttons push inputs to a buffer rather than straight to an
@@ -131,7 +164,6 @@ function clickDecimal(event) {
   }
 }
 
-
 //when any operator is pressed, the function pushes everything in the
 //buffer into the calculation array. this allows for multiple-digit inputs.
 //it then clears the buffer to make room for the next number input
@@ -145,7 +177,6 @@ function smoothOperator(event) {
     calculation.push(buffer);
     buffer = "";
     calculation.push(event.target.value);
-    //console.log(calculation);
   }
 }
 //this is the bit that does the actual calculation.
@@ -164,7 +195,6 @@ function clickEquals(){
     if (calcDisplay.value != "0" && calcDone == false) {
       calcDone = true;
       calculation.push(buffer);
-      //console.log(calculation);
       let num1 = parseFloat(calculation[0], 10);
       let num2 = parseFloat(calculation[2], 10);
       let opp = calculation[1];
@@ -200,41 +230,6 @@ function clickEquals(){
   }
 }
 
-
-//These are the event listners that translate button clicks into
-//specific function calls
-getNumber.forEach(function(e){
-  e.addEventListener('click', clickNumber);
-});
-getOperator.forEach(function(e){
-  e.addEventListener('click', smoothOperator);
-});
-getPlusMinus.forEach(function(e){
-  e.addEventListener('click', clickPlusMinus);
-});
-getPercent.forEach(function(e){
-  e.addEventListener('click', clickPercent);
-});
-getEquals.forEach(function(e){
-  e.addEventListener('click', clickEquals);
-});
-getClear.forEach(function(e){
-  e.addEventListener('click', clickClear);
-});
-getDecimal.forEach(function(e){
-  e.addEventListener('click', clickDecimal);
-});
-getZero.forEach(function(e){
-  e.addEventListener('click', clickZero);
-});
-getSquare.forEach(function(e){
-  e.addEventListener('click', clickSquare);
-});
-getSqroot.forEach(function(e){
-  e.addEventListener('click', clickSqroot);
-});
-
-
 //square and squareRoot are working, but can be easily broken.
 //both need flow control.
 function clickSquare(event) {
@@ -242,42 +237,33 @@ function clickSquare(event) {
   let num1 = parseFloat(calculation[0]);
   result = num1 * num1;
   calcDisplay.value = result;
-  // console.log(result);
-  // console.log(event.target.value);
 }
 function clickSqroot(event) {
   calculation.push(buffer);
   let num1 = parseFloat(calculation[0]);
   result = Math.sqrt(num1);
   calcDisplay.value = result;
-  // console.log(result);
-  // console.log(event.target.value);
 }
 
+//clickPercent function takes number in buffer, extracts it, divides
+//it by 100, then adds it back to the calculation array.
 function clickPercent(event) {
   if (percentOn == false && calcDisplay.value != "0"){
     percentOn = true;
-    //calculation.push(buffer);
-    //buffer = "";
     numPerc = parseFloat(buffer);
     buffer = "";
-    //numPerc = parseFloat(calculation[0]);
     numPerc = numPerc/100;
     calculation.push(numPerc);
     calcDisplay.value = (calcDisplay.value + event.target.value);
-    console.log(event.target.value);
   }
 }
-
-
+//if the display has a %, the equals sign triggers this function.
 function percCalc(){
   if (buffer != ""){
     calculation.push(buffer);
   }
   if (calcDisplay.value != "0" && calcDone == false) {
     calcDone = true;
-    //calculation.push(buffer);
-    console.log(calculation);
     let i = calculation.length;
     let num1 = parseFloat(calculation[0], 10);
     let num2 = parseFloat(calculation[(i-1)], 10);

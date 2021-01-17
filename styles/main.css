@@ -43,7 +43,7 @@ button:focus {
   outline: none;
 }
 
-.operator, .equal-sign, .square, .sqroot {
+.operator, .equal-sign, .square, .sqroot, .cube, .cuberoot, .trig {
   background-color: #FF9D00;
 }
 

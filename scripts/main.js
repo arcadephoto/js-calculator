@@ -6,9 +6,15 @@
 //plus-minus button works, but can be broken by pushing it multiple times
 //square button works, but with no flow control
 //square root works, but with no flow control
+//cube works, but with no flow control
+//cube root works, but with no flow control, also floating point needs work
 //arbitary exponent works
 //arbitary root works
 //Percentage works
+//SIN works, but with no flow control
+//LOG works, again with the flow control caveat
+//TAN works, no flow control
+//COS works, no flow control
 //TO DO: ADD CHECK TO OPERATOR FUNCTION SO THAT THE CALCULATOR
 //ACCEPTS INPUT AFTER INPUT WITHOUT NEEDING TO HIT CLEAR OR EQUALS
 
@@ -26,6 +32,9 @@ const getZero = document.querySelectorAll("[class='number btn-lg']")
 const getDecimal = document.querySelectorAll("[class='decimal']");
 const getSquare = document.querySelectorAll('.square');
 const getSqroot = document.querySelectorAll('.sqroot');
+const getCube = document.querySelectorAll('.cube');
+const getCubeRoot = document.querySelectorAll('.cuberoot');
+const getTrig = document.querySelectorAll('.trig');
 
 //a handful of useful variables, all of which are reset to default on
 //page load
@@ -37,6 +46,7 @@ let calcDone = false;
 let minusSwitch = false;
 let numPerc;
 let percentOn = false;
+let trig = "";
 
 //These are the event listners that translate button clicks into
 //specific function calls
@@ -70,6 +80,15 @@ getSquare.forEach(function(e){
 getSqroot.forEach(function(e){
   e.addEventListener('click', clickSqroot);
 });
+getCube.forEach(function(e){
+  e.addEventListener('click', clickCube);
+});
+getCubeRoot.forEach(function(e){
+  e.addEventListener('click', clickCubeRoot);
+});
+getTrig.forEach(function(e){
+  e.addEventListener('click', clickTrig);
+});
 
 
 function pushNumber(event) {
@@ -79,7 +98,7 @@ function pushOperator(event) {
   alert(event.target.value);
 }
 function calculate(event) {
-  //alert(event.target.value);
+  alert(event.target.value);
   //console.log(calculation);
 }
 //the PlusMinus button. it works, but it can be abused.
@@ -133,6 +152,7 @@ function clickNumber(event) {
       buffer = (buffer + event.target.value);
       currentChar = event.target.value;
     }
+    pushNumber(event);
   }
 }
 
@@ -177,10 +197,13 @@ function smoothOperator(event) {
     calculation.push(buffer);
     buffer = "";
     calculation.push(event.target.value);
+    pushOperator(event);
   }
 }
 //this is the bit that does the actual calculation.
-//it starts by making sure that the display isn't showing just 0.
+//if first checks if the display includes a % sign. if it does, it triggers
+//percCalc instead.
+//it checks to make sure that the display isn't showing just 0.
 //it also checks the calcDone variable. this prevents activating
 //the EQUALS function multiple times in a row.
 //
@@ -188,7 +211,47 @@ function smoothOperator(event) {
 //calculation array
 
 function clickEquals(){
-  if (calcDisplay.value.includes("%")){
+  if (trig) {
+    switch (trig){
+      case "sin":
+      calculation.push(buffer);
+      num1 = calculation[0];
+      result = Math.sin(num1);
+      calcDisplay.value = result;
+      break;
+      case "log":
+      calculation.push(buffer);
+      num1 = calculation[0];
+      result = Math.log10(num1);
+      calcDisplay.value = result;
+      break;
+      case "cos":
+      calculation.push(buffer);
+      num1 = calculation[0];
+      result = Math.cos(num1);
+      calcDisplay.value = result;
+      break;
+      case "tan":
+      calculation.push(buffer);
+      num1 = calculation[0];
+      result = Math.tan(num1);
+      calcDisplay.value = result;
+      break;
+      case "cosh":
+      calculation.push(buffer);
+      num1 = calculation[0];
+      result = Math.cosh(num1);
+      calcDisplay.value = result;
+      break;
+      case "sinh":
+      calculation.push(buffer);
+      num1 = calculation[0];
+      result = Math.sinh(num1);
+      calcDisplay.value = result;
+      break;
+    }
+  }
+  else if (calcDisplay.value.includes("%")){
     percCalc();
   }
   else{
@@ -221,12 +284,12 @@ function clickEquals(){
       }
     }
     //this is the for() loop and alert required by the assignment
-    // for (let i = 0; i < calculation.length; i++ ){
-    //   alert(calculation[i]);
-    //   if ((i + 1) == calculation.length ){
-    //     alert(`equals ${result}!`);
-    //   }
-    // }
+    for (let i = 0; i < calculation.length; i++ ){
+      alert(calculation[i]);
+      if ((i + 1) == calculation.length ){
+        alert(`equals ${result}!`);
+      }
+    }
   }
 }
 
@@ -243,6 +306,25 @@ function clickSqroot(event) {
   let num1 = parseFloat(calculation[0]);
   result = Math.sqrt(num1);
   calcDisplay.value = result;
+}
+
+function clickCube(event) {
+  calculation.push(buffer);
+  let num1 = parseFloat(calculation[0]);
+  result = num1 * num1 * num1;
+  calcDisplay.value = result;
+}
+
+function clickCubeRoot(event) {
+  calculation.push(buffer);
+  let num1 = parseFloat(calculation[0]);
+  result = Math.pow(num1, 1/3);
+  calcDisplay.value = result;
+}
+
+function clickTrig(event) {
+  calcDisplay.value = event.target.value;
+  trig = event.target.value;
 }
 
 //clickPercent function takes number in buffer, extracts it, divides
@@ -273,3 +355,11 @@ function percCalc(){
     calcDisplay.value = result;
   }
 }
+//I couldn't get this one to work. In theory, it should pass the trig
+//variable into the Math function.
+// if (trig){
+//   calculation.push(buffer);
+//   num1 = calculation[0];
+//   result = Math.`${trig}`(num1);
+//   calcDisplay.value = result;
+// }

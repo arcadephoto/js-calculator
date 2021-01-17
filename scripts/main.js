@@ -6,6 +6,9 @@
 //plus-minus button works, but can be broken by pushing it multiple times
 //square button works, but with no flow control
 //square root works, but with no flow control
+//arbitary exponent works
+//arbitary root works
+
 
 
 
@@ -156,6 +159,12 @@ function clickEquals(){
     }
     else if (opp == "/") {
       result = num1 / num2;
+    }
+    else if (opp == "^") {
+      result = Math.pow(num1, num2);
+    }
+    else if (opp == "√x") {
+      result = Math.pow(num1, 1/num2);
     }
     if (result || result == "0"){
       calcDisplay.value = result;

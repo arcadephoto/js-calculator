@@ -1,16 +1,14 @@
 //basic calculation works
 //multi-digit input works
-//prevents operator stacking (can't input +++ *** and so on)
+//operator stacking prevented (can't input +++ *** and so on)
 //decimals appear to work. *fingers crossed*
-//once calculation has run, inputting number automatically resets
+//once calculation has run, inputting a number automatically resets
 //plus-minus button works, but can be broken by pushing it multiple times
 //square button works, but with no flow control
 //square root works, but with no flow control
 //arbitary exponent works
 //arbitary root works
-
-
-
+//Percentage works
 
 
 //these create constants by converting the various classes defined
@@ -35,6 +33,8 @@ let currentChar = "";
 let operatorOn = false;
 let calcDone = false;
 let minusSwitch = false;
+let numPerc;
+let percentOn = false;
 
 
 function pushNumber(event) {
@@ -47,6 +47,8 @@ function calculate(event) {
   //alert(event.target.value);
   //console.log(calculation);
 }
+//the PlusMinus button. it works, but it can be abused.
+//more flow control to follow.
 //possibly change flow control for +- to check currentChar flag
 function clickPlusMinus(event){
   if (minusSwitch == false){
@@ -59,9 +61,12 @@ function clickPlusMinus(event){
   }
 }
 
+
+//placeholder function, to be replaced as buttons are added
 function clickButton(event) {
   console.log(event.target.value);
 }
+//the CLEAR button - resets all variables
 function clickClear(){
   operatorOn = false;
   calcDone = false;
@@ -70,6 +75,8 @@ function clickClear(){
   buffer = "";
   currentChar = "";
   minusSwitch = false;
+  percentOn = false;
+
 }
 
 //the number buttons push inputs to a buffer rather than straight to an
@@ -112,6 +119,9 @@ function clickZero(event) {
   }
 }
 
+//the decimal button. pushes decimal to buffer rather than array.
+//later, pressing OPERATOR button sends buffer to array.
+//currentChar variable prevents multiple decimals in a row
 function clickDecimal(event) {
   if (currentChar != "." ) {
     currentChar = ".";
@@ -138,39 +148,49 @@ function smoothOperator(event) {
     //console.log(calculation);
   }
 }
+//this is the bit that does the actual calculation.
+//it starts by making sure that the display isn't showing just 0.
+//it also checks the calcDone variable. this prevents activating
+//the EQUALS function multiple times in a row.
+//
+//this function pushes the remaining buffer string into the
+//calculation array
 
-//this pushes everything else in the buffer into the calculation array.
 function clickEquals(){
-  if (calcDisplay.value != "0" && calcDone == false) {
-    calcDone = true;
-    calculation.push(buffer);
-    //console.log(calculation);
-    let num1 = parseFloat(calculation[0], 10);
-    let num2 = parseFloat(calculation[2], 10);
-    let opp = calculation[1];
-    if (opp == "+") {
-      result = num1 + num2;
+  if (calcDisplay.value.includes("%")){
+    percCalc();
+  }
+  else{
+    if (calcDisplay.value != "0" && calcDone == false) {
+      calcDone = true;
+      calculation.push(buffer);
+      //console.log(calculation);
+      let num1 = parseFloat(calculation[0], 10);
+      let num2 = parseFloat(calculation[2], 10);
+      let opp = calculation[1];
+      if (opp == "+") {
+        result = num1 + num2;
+      }
+      else if (opp == "-"){
+        result = num1 - num2;
+      }
+      else if (opp == "*"){
+        result = num1 * num2;
+      }
+      else if (opp == "/") {
+        result = num1 / num2;
+      }
+      else if (opp == "^") {
+        result = Math.pow(num1, num2);
+      }
+      else if (opp == "√x") {
+        result = Math.pow(num1, 1/num2);
+      }
+      if (result || result == "0"){
+        calcDisplay.value = result;
+      }
     }
-    else if (opp == "-"){
-      result = num1 - num2;
-    }
-    else if (opp == "*"){
-      result = num1 * num2;
-    }
-    else if (opp == "/") {
-      result = num1 / num2;
-    }
-    else if (opp == "^") {
-      result = Math.pow(num1, num2);
-    }
-    else if (opp == "√x") {
-      result = Math.pow(num1, 1/num2);
-    }
-    if (result || result == "0"){
-      calcDisplay.value = result;
-    }
-
-    //this is the for loop and alert required by the assignment
+    //this is the for() loop and alert required by the assignment
     // for (let i = 0; i < calculation.length; i++ ){
     //   alert(calculation[i]);
     //   if ((i + 1) == calculation.length ){
@@ -181,8 +201,8 @@ function clickEquals(){
 }
 
 
-//const getButton = document.querySelectorAll("[type='button']");
-//console.log(getButton);
+//These are the event listners that translate button clicks into
+//specific function calls
 getNumber.forEach(function(e){
   e.addEventListener('click', clickNumber);
 });
@@ -193,7 +213,7 @@ getPlusMinus.forEach(function(e){
   e.addEventListener('click', clickPlusMinus);
 });
 getPercent.forEach(function(e){
-  e.addEventListener('click', clickButton);
+  e.addEventListener('click', clickPercent);
 });
 getEquals.forEach(function(e){
   e.addEventListener('click', clickEquals);
@@ -215,7 +235,8 @@ getSqroot.forEach(function(e){
 });
 
 
-
+//square and squareRoot are working, but can be easily broken.
+//both need flow control.
 function clickSquare(event) {
   calculation.push(buffer);
   let num1 = parseFloat(calculation[0]);
@@ -231,4 +252,38 @@ function clickSqroot(event) {
   calcDisplay.value = result;
   // console.log(result);
   // console.log(event.target.value);
+}
+
+function clickPercent(event) {
+  if (percentOn == false && calcDisplay.value != "0"){
+    percentOn = true;
+    //calculation.push(buffer);
+    //buffer = "";
+    numPerc = parseFloat(buffer);
+    buffer = "";
+    //numPerc = parseFloat(calculation[0]);
+    numPerc = numPerc/100;
+    calculation.push(numPerc);
+    calcDisplay.value = (calcDisplay.value + event.target.value);
+    console.log(event.target.value);
+  }
+}
+
+
+function percCalc(){
+  if (buffer != ""){
+    calculation.push(buffer);
+  }
+  if (calcDisplay.value != "0" && calcDone == false) {
+    calcDone = true;
+    //calculation.push(buffer);
+    console.log(calculation);
+    let i = calculation.length;
+    let num1 = parseFloat(calculation[0], 10);
+    let num2 = parseFloat(calculation[(i-1)], 10);
+    result = num1 * num2;
+  }
+  if (result || result == "0"){
+    calcDisplay.value = result;
+  }
 }

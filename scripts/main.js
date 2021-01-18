@@ -15,6 +15,8 @@
 //LOG works, again with the flow control caveat
 //TAN works, no flow control
 //COS works, no flow control
+//SINH works
+//COSH works
 //TO DO: ADD CHECK TO OPERATOR FUNCTION SO THAT THE CALCULATOR
 //ACCEPTS INPUT AFTER INPUT WITHOUT NEEDING TO HIT CLEAR OR EQUALS
 

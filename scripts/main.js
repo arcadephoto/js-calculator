@@ -1,7 +1,7 @@
 //basic calculation works
 //multi-digit input works
 //operator stacking prevented (can't input +++ *** and so on)
-//decimals appear to work. *fingers crossed*
+//decimals work.
 //once calculation has run, inputting a number automatically resets
 //plus-minus button works, but can be broken by pushing it multiple times
 //square button works, but with no flow control
@@ -91,6 +91,10 @@ getTrig.forEach(function(e){
 });
 
 
+
+//these are three functions required by the assignment.
+//in normal calculator mode, these would be disabled and the
+//alerts() wouldn't pop up.
 function pushNumber(event) {
   alert(event.target.value);
 }
@@ -115,7 +119,7 @@ function clickPlusMinus(event){
   }
 }
 
-//placeholder function, to be replaced as buttons are added
+//placeholder function, will eventually be removed
 function clickButton(event) {
   console.log(event.target.value);
 }
@@ -131,8 +135,8 @@ function clickClear(){
   percentOn = false;
 }
 
-//the number buttons push inputs to a buffer rather than straight to an
-//array. this allows multiple-digit numbers.
+//the number buttons push inputs to a string "buffer" rather than
+//straight to an array. this allows multiple-digit numbers.
 //also checks calcDone function. if true, clickNumber resets the calculator.
 //in other words, if the user has already run a calculation, then hitting
 //a number button resets and starts fresh.
@@ -201,14 +205,17 @@ function smoothOperator(event) {
   }
 }
 //this is the bit that does the actual calculation.
-//if first checks if the display includes a % sign. if it does, it triggers
+//the switch:case sequence handles all the trig functions - sin, cos,
+//and so on.
+//after that, the function
+//checks if the display includes a % sign. if it does, it triggers
 //percCalc instead.
-//it checks to make sure that the display isn't showing just 0.
+//then it checks to make sure that the display isn't showing just 0.
 //it also checks the calcDone variable. this prevents activating
 //the EQUALS function multiple times in a row.
 //
 //this function pushes the remaining buffer string into the
-//calculation array
+//calculation array, then performs the math on that array.
 
 function clickEquals(){
   if (trig) {
@@ -321,6 +328,11 @@ function clickCubeRoot(event) {
   result = Math.pow(num1, 1/3);
   calcDisplay.value = result;
 }
+
+//this is activated by clicking one of the trig buttons - sin, cos,
+//log and so on. It uses the event input to set the "trig" variable,
+//which is then used by the switch:case portion of the clickEquals()
+//function above.
 
 function clickTrig(event) {
   calcDisplay.value = event.target.value;
